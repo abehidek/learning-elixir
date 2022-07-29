@@ -41,6 +41,20 @@ defmodule ComprehensionsContent do
   @doc """
   Filters
   """
+  import Integer
+
   def filters do
+    # you can think filters the same way as a guaurd for comprehensions, or the filter function for enumarables, when a filter returns a false or nil value, it's excluded from the final lists
+    # to use multiple filters, just separate then with comma
+    for(x <- 1..100, is_even(x), rem(x, 3) == 0, do: x) |> IO.inspect()
+    :ok
+  end
+
+  def into_function do
+    # if you wanna produce other thing as a list, you can use the :into option, it accepts any structure that implements the Collectable protocol
+    for({k, v} <- [one: 1, two: 2, three: 3], into: %{}, do: {k, v}) |> IO.inspect()
+
+    for(c <- [72, 101, 108, 108, 111], into: "", do: <<c>>) |> IO.inspect()
+    :ok
   end
 end
