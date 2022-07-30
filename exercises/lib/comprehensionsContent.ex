@@ -54,6 +54,8 @@ defmodule ComprehensionsContent do
     # if you wanna produce other thing as a list, you can use the :into option, it accepts any structure that implements the Collectable protocol
     for({k, v} <- [one: 1, two: 2, three: 3], into: %{}, do: {k, v}) |> IO.inspect()
 
+    # %{one: 1, three: 3, two: 2} => this happens because maps are often organized by alphabetical order
+
     for(c <- [72, 101, 108, 108, 111], into: "", do: <<c>>) |> IO.inspect()
     :ok
   end
