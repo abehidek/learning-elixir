@@ -7,6 +7,7 @@ defmodule PhxapiWeb.Router do
 
   scope "/api", PhxapiWeb do
     pipe_through :api
+    get "/", UserController, :index
   end
 
   # Enables LiveDashboard only for development
