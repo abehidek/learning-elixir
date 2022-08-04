@@ -1,19 +1,13 @@
 defmodule HelloWeb.CounterLive do
   use Phoenix.LiveView
+  alias HelloWeb.CounterView
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :number, 0)}
+    {:ok, socket |> assign(:number, 0)}
   end
 
   def render(assigns) do
-    ~L"""
-    <section>
-      <p class="text-4xl font-bold underline">Counter</p>
-      <p>Count: <%= @number %></p>
-      <button phx-click="inc">+</button>
-      <button phx-click="dec">-</button>
-    </section>
-    """
+    CounterView.render("counter.html", assigns)
   end
 
   def handle_event("inc", _, socket) do

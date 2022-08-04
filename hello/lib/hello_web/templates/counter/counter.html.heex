@@ -1,6 +1,6 @@
 <section>
     <p class="text-4xl font-bold underline">Counter</p>
-    <span><% @number %></span>
-    <button>+</button>
-    <button>-</button>
+    <p>Count: <%= @number %></p>
+    <button phx-click="inc">+</button>
+    <button phx-click="dec">-</button>
 </section>
