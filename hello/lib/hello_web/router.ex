@@ -21,6 +21,7 @@ defmodule HelloWeb.Router do
     get "/hello", HelloController, :index
     get "/another", AnotherController, :index
     get "/another/:message", AnotherController, :index
+    get "/counter", CounterController, :index
   end
 
   # Other scopes may use custom stacks.
