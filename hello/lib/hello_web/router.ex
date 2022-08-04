@@ -8,6 +8,7 @@ defmodule HelloWeb.Router do
     plug :put_root_layout, {HelloWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug HelloWeb.Plugs.Locale, "pt"
   end
 
   pipeline :api do
@@ -22,6 +23,8 @@ defmodule HelloWeb.Router do
     get "/another", AnotherController, :index
     get "/another/:message", AnotherController, :index
     get "/counter", CounterController, :index
+    # set standard matrix of HTTP verbs
+    resources "/users", UserController
   end
 
   # Other scopes may use custom stacks.
