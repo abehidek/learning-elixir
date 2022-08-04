@@ -23,10 +23,23 @@ defmodule HelloWeb.Router do
     get "/another", AnotherController, :index
     get "/another/:message", AnotherController, :index
     # set standard matrix of HTTP verbs
-    resources "/users", UserController
+    resources "/users", UserController do
+      # nested resources
+      resources "/posts", PostController
+
+      # to call path helper functio you do:
+      # HelloWeb.Router.Helpers.user_post_path(HelloWeb.Endpoint, :show, 42, 17)
+      # "/users/42/posts/17"
+    end
 
     # set phoenix liveview
     live "/counter", CounterLive
+  end
+
+  scope "/admin", HelloWeb.Admin, as: :admin do
+    pipe_through :browser
+
+    resources "/reviews", ReviewController
   end
 
   # Other scopes may use custom stacks.
