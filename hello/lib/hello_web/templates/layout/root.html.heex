@@ -25,6 +25,12 @@
         </a>
       </section>
     </header>
+    <%= link "Welcome Page!", to: Routes.page_path(@conn, :index) %>
+    <!--
+      Path helpers
+      iex> HelloWeb.Router.Helpers.another_path(HelloWeb.Endpoint, :index, "teste", admin: true, active: false) 
+      "/another/teste?admin=true&active=false"
+    -->
     <%= @inner_content %>
   </body>
 </html>
