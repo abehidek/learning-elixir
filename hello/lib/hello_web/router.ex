@@ -1,16 +1,26 @@
 defmodule HelloWeb.Router do
   use HelloWeb, :router
 
+  # Pipeline are a series of plugs that can be attached to specific scopes.
+  # Routes are defined inside scopes and scopes may through multiple pipelines. Once a route matches Phoenix invokes all plugs defined on the pipelines associated to that route
+
+  # there are two main pipelines defined by default
+  # :browser => prepare for routes which render requests for a browser
   pipeline :browser do
     plug :accepts, ["html"]
+    # fetch session data and makes it avaiable in the connection
     plug :fetch_session
+    # fetchs any flash messages from LiveView and merges them with the controller flash messages
     plug :fetch_live_flash
+    # stores the root layout for rendering purposes
     plug :put_root_layout, {HelloWeb.LayoutView, :root}
+    # protect forms posts from cross-site forgery
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug HelloWeb.Plugs.Locale, "pt"
   end
 
+  # :api => prepare for routes which produce data for an API
   pipeline :api do
     plug :accepts, ["json"]
   end
