@@ -22,9 +22,11 @@ defmodule HelloWeb.Router do
     get "/hello", HelloController, :index
     get "/another", AnotherController, :index
     get "/another/:message", AnotherController, :index
-    get "/counter", CounterController, :index
     # set standard matrix of HTTP verbs
     resources "/users", UserController
+
+    # set phoenix liveview
+    live "/counter", CounterLive
   end
 
   # Other scopes may use custom stacks.
