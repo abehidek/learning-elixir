@@ -15,7 +15,8 @@ defmodule Phxchat.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Phxchat.PubSub},
       # Start the Endpoint (http/https)
-      PhxchatWeb.Endpoint
+      PhxchatWeb.Endpoint,
+      PhxchatWeb.Presence
       # Start a worker by calling: Phxchat.Worker.start_link(arg)
       # {Phxchat.Worker, arg}
     ]

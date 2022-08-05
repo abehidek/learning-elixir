@@ -12,7 +12,8 @@ defmodule PhxchatWeb.PageLive do
   end
 
   def handle_event("random-room", _params, socket) do
-    Logger.info("Generate a random room")
-    {:noreply, socket}
+    random_slug = "/" <> MnemonicSlugs.generate_slug(4)
+    Logger.info("Generate a random room: #{random_slug}")
+    {:noreply, push_redirect(socket, to: random_slug)}
   end
 end

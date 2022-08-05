@@ -47,7 +47,8 @@ defmodule Phxchat.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:mnemonic_slugs, "~> 0.0.3"}
+      {:mnemonic_slugs, "~> 0.0.3"},
+      {:elixir_uuid, "~> 1.2"}
     ]
   end
 
