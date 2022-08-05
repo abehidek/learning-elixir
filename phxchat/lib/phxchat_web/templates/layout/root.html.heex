@@ -9,10 +9,11 @@
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
   </head>
-  <body class="max-w-5xl m-auto">
+  <body class="max-w-3xl m-auto">
     <div class="flex flex-col gap-4 pt-12">
-      <header>
-        <h1 class="text-4xl font-bold">PhxChat</h1>
+      <header class="flex gap-2 items-center justify-between">
+        <a class="text-4xl font-bold cursor-pointer" href="/">PhxChat</a>
+        <h1 class="text-xl">made by: <a class="text-purple-500 cursor-pointer" href="https://abehidek.me">abehidek</a></h1>
       </header>
       <%= @inner_content %>
     </div>

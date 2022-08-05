@@ -16,4 +16,8 @@ defmodule PhxchatWeb.PageLive do
     Logger.info("Generate a random room: #{random_slug}")
     {:noreply, push_redirect(socket, to: random_slug)}
   end
+
+  def handle_event("submit_search", %{"searchform" => %{"searchbox" => search}}, socket) do
+    {:noreply, socket |> push_redirect(to: "/" <> search)}
+  end
 end

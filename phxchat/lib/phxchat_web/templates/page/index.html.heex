@@ -1,7 +1,16 @@
-<section class="phx-hero">
-  <h1>Chat Application</h1>
-</section>
+<div class="flex flex-col gap-8">
+  <section class="flex flex-col gap-5">
+    <h1 class="font-bold text-2xl">Create a new room</h1>
+    <button class="bg-purple-600 p-3 rounded text-white" phx-click="random-room" title="Generate a random room">Generate a random room</button>
+  </section>
 
-<section class="row">
-  <button phx-click="random-room" title="Create a random room">Create a new room</button>
-</section>
+  <h1 class="font-bold text-2xl">...</h1>
+  
+  <%= f = form_for :searchform, "#", id: "search", phx_submit: :submit_search, class: "flex gap-5" %>
+    <h1 class="font-bold text-2xl">Or enter a existing room</h1>
+    <%= text_input f, :searchbox, placeholder: "Chat Room ID...", class: "w-full rounded" %>
+    <%= submit "Enter Room", class: "bg-purple-600 p-3 rounded text-white" %>
+  
+</div>
+
+
