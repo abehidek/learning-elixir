@@ -2,9 +2,10 @@
 
 <div class="container">
     <div id="users">
-        <h4>Users:</h4>
-        <p>user1</p>
-        <p>user2</p>
+        <h4>Users online:</h4>
+        <%= for user <- @user_list do%>
+            <p> <%= user %> </p>
+        <% end %>
     </div>
     <div id="messages" phx-update="append">
         <%= for message <- @messages do %>

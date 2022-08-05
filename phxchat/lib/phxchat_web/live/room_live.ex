@@ -19,6 +19,7 @@ defmodule PhxchatWeb.RoomLive do
        username: username,
        topic: topic,
        messages: [],
+       user_list: [],
        temporary_assigns: [messages: []]
      )}
   end
@@ -57,7 +58,13 @@ defmodule PhxchatWeb.RoomLive do
         %{type: :system, uuid: UUID.uuid4(), content: "#{username} left"}
       end)
 
-    {:noreply, socket |> assign(messages: join_messages ++ leave_messages)}
+    user_list =
+      PhxchatWeb.Presence.list(socket.assigns.topic)
+      |> Map.keys()
+
+    Logger.info(user_list: user_list)
+
+    {:noreply, socket |> assign(messages: join_messages ++ leave_messages, user_list: user_list)}
   end
 
   def display_message(%{type: :system, uuid: uuid, content: content}) do
