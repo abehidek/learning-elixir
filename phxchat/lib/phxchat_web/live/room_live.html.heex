@@ -1,20 +1,23 @@
-<h2 class="font-bold">Currently chatting in <%= @room_id %> as <%= @username %> </h2>
+<h2>Currently chatting in <b><%= @room_id %></b> as <b><%= @username %></b> </h2>
 
-<div class="container">
-    <div id="users">
-        <h4>Users online:</h4>
-        <%= for user <- @user_list do%>
-            <p> <%= user %> </p>
-        <% end %>
-    </div>
-    <div id="messages" phx-update="append">
-        <%= for message <- @messages do %>
-            <%= display_message(assigns, message) %>
-        <% end %>
-    </div>
+<div class="flex flex-col gap-4 ">
+    <main class="flex gap-4">
+        <div class="w-full p-4 border-2 rounded" id="messages" phx-update="append">
+            <%= for message <- @messages do %>
+                <%= display_message(assigns, message) %>
+            <% end %>
+        </div>
+        <div class="w-1/3 border-2 p-4 rounded"id="users">
+            <h4 class="text-xl font-bold">Users online:</h4>
+            <%= for user <- @user_list do%>
+                <p class="mt-2"> <%= user %> </p>
+            <% end %>
+        </div>
+    </main>
+    
 
-    <div class="actions">
+    <div>
         <%= f = form_for :chat, "#", id: "chat-form", phx_submit: :submit_message, phx_change: :form_update %>
-            <%= text_input f, :message, value: @message, placeholder: "Enter your message..." %>
+            <%= text_input f, :message, value: @message, placeholder: "Enter your message...", class: "w-full rounded" %>
     </div>
 </div>
