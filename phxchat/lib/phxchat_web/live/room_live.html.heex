@@ -9,7 +9,7 @@
     </div>
     <div id="messages" phx-update="append">
         <%= for message <- @messages do %>
-            <%= display_message(message) %>
+            <%= display_message(assigns, message) %>
         <% end %>
     </div>
 
