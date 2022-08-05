@@ -1,6 +1,6 @@
-# fly.toml file generated for wild-wildflower-3475 on 2022-08-05T11:00:33-03:00
+# fly.toml file generated for phxchat on 2022-08-05T17:53:53-03:00
 
-app = "wild-wildflower-3475"
+app = "phxchat"
 kill_signal = "SIGTERM"
 kill_timeout = 5
 processes = []
@@ -9,7 +9,7 @@ processes = []
   release_command = "/app/bin/migrate"
 
 [env]
-  PHX_HOST = "wild-wildflower-3475.fly.dev"
+  PHX_HOST = "phxchat.fly.dev"
   PORT = "8080"
 
 [experimental]
