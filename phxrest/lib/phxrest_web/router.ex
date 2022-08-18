@@ -5,8 +5,9 @@ defmodule PhxrestWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", PhxrestWeb do
+  scope "/", PhxrestWeb do
     pipe_through :api
+    get "/", IndexController, :index
   end
 
   # Enables LiveDashboard only for development
