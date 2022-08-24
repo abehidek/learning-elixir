@@ -101,4 +101,6 @@ defmodule Authapi.Accounts do
   def change_user(%User{} = user, attrs \\ %{}) do
     User.changeset(user, attrs)
   end
+
+  # do auth_user
 end

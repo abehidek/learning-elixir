@@ -15,7 +15,6 @@ defmodule AuthapiWeb.UserView do
       id: user.id,
       name: user.name,
       age: user.age,
-      password: user.password
     }
   end
 end
