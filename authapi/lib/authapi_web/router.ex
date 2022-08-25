@@ -8,6 +8,7 @@ defmodule AuthapiWeb.Router do
   scope "/api", AuthapiWeb do
     pipe_through :api
 
+    get "/auth", AuthController, :auth
     resources "/users", UserController, except: [:new, :edit]
   end
 
