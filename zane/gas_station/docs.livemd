@@ -1,0 +1,7 @@
+# Gas Station API
+
+## Section
+
+```elixir
+GasStation.Api.Eth.fetch_response()
+```
