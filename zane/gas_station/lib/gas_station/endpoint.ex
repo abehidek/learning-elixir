@@ -15,6 +15,11 @@ defmodule GasStation.Endpoint do
     send_resp(conn, 200, Poison.encode!(gas_info))
   end
 
+  get "/gas/polygon" do
+    {:ok, gas_info} = GasStation.Fetchers.Polygon.get()
+    send_resp(conn, 200, Poison.encode!(gas_info))
+  end
+
   match _ do
     send_resp(conn, 404, Poison.encode!(%{message: "Not found"}))
   end

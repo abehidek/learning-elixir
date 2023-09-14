@@ -15,6 +15,7 @@ defmodule GasStation.Application do
       # Starts a worker by calling: GasStation.Worker.start_link(arg)
       # {GasStation.Worker, arg}
       GasStation.Fetchers.Eth,
+      GasStation.Fetchers.Polygon,
       {Plug.Cowboy, scheme: :http, plug: GasStation.Endpoint, port: @port}
     ]
 

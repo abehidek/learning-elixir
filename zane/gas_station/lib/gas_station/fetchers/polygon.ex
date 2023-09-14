@@ -1,4 +1,4 @@
-defmodule GasStation.Fetchers.Eth do
+defmodule GasStation.Fetchers.Polygon do
   @moduledoc false
   use GasStation.Fetchers.GasServer
 
@@ -7,7 +7,7 @@ defmodule GasStation.Fetchers.Eth do
     now = :os.system_time(:millisecond)
 
     if now - 30_000 > state.last_updated do
-      case GasStation.Api.Eth.fetch_response() do
+      case GasStation.Api.Polygon.fetch_response() do
         {:ok, response} ->
           IO.puts("New response: #{inspect(response)}")
 
