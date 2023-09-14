@@ -1,0 +1,606 @@
+# Octallium - Functional with Elx
+
+## Match Operator and Pattern Matching
+
+Elixir uses the `=` sign not for assignments but for matching both sides (left and right) into the same value.
+
+It's called the match operator
+
+```elixir
+a = 1
+1 = a
+```
+
+You can also match by patterns, it's called pattern matching
+
+```elixir
+[a, a] = [1, 1]
+```
+
+The following code however will not work because the match operator matches the value `1`into `d`, and then uses it to match against `2`, which causes a match error between the right and left side
+
+```elixir
+d = 1
+2 = d
+```
+
+The same thing applies when matching against incompatible patterns, this will try to both math the values `1` and `2`into the same variable `c`, which will cause a MatchError, and the value of `c` does not change because all variables in Elixir are immutable by default.
+
+```elixir
+# this will not work properly
+try do
+  [c, c] = [1, 2]
+rescue
+  e -> IO.inspect(e)
+end
+```
+
+However if we try to match an variable twice, we actually can change the value of it:
+
+```elixir
+immutable_variable = 1
+```
+
+```elixir
+immutable_variable = 20
+```
+
+This happens because Elixir thinks that we want to bound the new value to the variable on the left, for this to not happen, we can use the pin (`^`) operator:
+
+```elixir
+# which is equivalent to "10 = immutable_variable"
+try do
+  ^immutable_variable = 10
+rescue
+  e -> IO.inspect(e)
+end
+```
+
+This immutability allows for applications to easily scale operations on these values, since we can copy easily this value across different threads/cores of an actual computer
+
+## Actor Model
+
+An actor receives a message and can process it and send message to other actors or emit a response. It's considered an isolated unit that gets something, process it and gives back.
+
+On the Erlang VM, the run inside processes which in turn exchanges immutable data.
+
+And the Erlang VM can be run on a cluster of machines, which means that we can scale horizontally across the globe if we want.
+
+These processes are not OS processes, they are more similar to virtual threads.
+
+1. Actors run in processes which are isolated from each other
+2. Each process is identified by a PID (Process Identifier)
+3. Allows inter-communication of processes by message passing
+4. Since data is immutable, we do not have to worry about changing state between actors, since all computation runs using copies of data
+5. Each process has it's Stack & Heap allocation, meaning each process has it's own GC and exceptions does not halt the entire program (only a process)
+
+How processes works
+
+1. Receives messages in mailbox
+2. Executed FIFO
+3. Very cheap to create (less than 3kb memory)
+4. Always communicate by message passing
+
+<!-- livebook:{"break_markdown":true} -->
+
+When using `iex`, we have an interactive repl which itself is a process
+
+We can check the PID of the running process by using the builtin function `self/0`
+
+```elixir
+self()
+```
+
+## Basics
+
+Elixir have two ways to run code in projects, interpreted (frequently used for scripts) and compiled.
+
+interpreted will pass line by line and execute it instantly on the Erlang VM.
+compiled will convert the code into bytecode (`.beam` file), which in turn can be executed directly on the Erlang VM.
+
+The main difference is the speed, when running in interpreted mode, Elixir have to do two steps and thus it's slower, however if you run directly the bytecode, this will be much faster.
+
+Also, scripting is frequently used when we don't want that code to be compiled together with the application when deploying, such as database migrations, testing etc...
+
+To run in interpreted mode, name your files with `.exs` extension.
+For compiling, name with `.ex` extension.
+
+Functions in Elixir are identified by arity (number of arguments) also, so we can have two functions with the same name but with different arity.
+
+## Data Types - Atoms
+
+Represents an symbol for something, it's a variable which the name of the variable is the same as it's value.
+
+```javascript
+// in javascript
+const nike = "nike"
+```
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+# instead of writing
+nike = "nike"
+
+# we can use:
+:nike
+```
+
+```elixir
+# here are some valid synthax for atoms
+at = :an_atom
+at2 = :"Also an atom but with spaces!"
+
+at2
+```
+
+They are very useful for pattern matching, it's common to use atoms such as `:ok` and `:error` such as below:
+
+```elixir
+defmodule SomeLib do
+  @moduledoc """
+    iex> SomeLib.divide(5, 2)
+    {:ok, 2.5}
+
+    iex> SomeLib.divide(10, 0)
+    {:error, "cannot divide by 0"}
+  """
+  def divide(dividend, divisor) when is_integer(dividend) and is_integer(divisor) do
+    if divisor == 0 do
+      {:error, "cannot divide by 0"}
+    else
+      {:ok, dividend / divisor}
+    end
+  end
+end
+```
+
+```elixir
+{:ok, result} = SomeLib.divide(10, 2)
+
+result
+```
+
+```elixir
+{:error, reason} = SomeLib.divide(5, 0)
+
+reason
+```
+
+## Data Types - String
+
+If we use double quotes (`"`), that is considered a String (or binary string) by Elixir such as above:
+
+```elixir
+IEx.Info.info("Hi there")
+```
+
+However, single quotes (`'`) produces a character list:
+
+```elixir
+IEx.Info.info(~c"Hi again")
+```
+
+We can pattern match on Strings:
+
+```elixir
+"H" <> rest = "Hi there"
+# Elixir again tries to match LHS with RHS, thus bounding "i there" to `rest`
+
+rest
+```
+
+The raw representation of Strings are binary values, inside double angle brackets:
+
+```elixir
+an_string = <<72, 105>> <> " mom"
+
+an_string
+```
+
+```elixir
+<<head, rest::binary>> = an_string
+
+head
+```
+
+```elixir
+<<head::binary-size(3), rest::binary>> = an_string
+
+head
+```
+
+```elixir
+# is head equals to code point of "H"
+head == ?H
+```
+
+```elixir
+rest
+```
+
+## Data Types - Charlist
+
+```elixir
+chars = ~c"World"
+```
+
+```elixir
+chars |> IEx.Info.info()
+```
+
+```elixir
+~c"Hello " ++ chars
+```
+
+```elixir
+is_list(chars)
+```
+
+## Data Types - Process
+
+```elixir
+my_pid = self()
+my_pid
+```
+
+## Data Types - Lists
+
+Are actually considered Linked Lists (which theyselves are recursive in nature)
+
+```elixir
+list = ["a", "b", "c"]
+list
+```
+
+```elixir
+try do
+  list[0]
+rescue
+  e -> IO.inspect(e)
+end
+
+# We receive error because this is actually a linked lists, thus index operations does not works
+```
+
+```elixir
+# We can access it through builtin functions of std lib
+
+Enum.at(list, 0)
+```
+
+To show the documentation of the function we can run:
+
+```elixir
+import IEx.Helpers
+
+# in IEx console we can use just "h()"
+IEx.Helpers.h(Enum.at())
+```
+
+```elixir
+[f, s, t] = list
+
+IO.inspect(f)
+IO.inspect(s)
+IO.inspect(t)
+
+list
+```
+
+```elixir
+# returns the head of list
+hd(list)
+```
+
+```elixir
+# returns the tail of list
+tl(list)
+```
+
+```elixir
+[h | t] = list
+h
+```
+
+```elixir
+t
+```
+
+## Data Types - Tuples
+
+```elixir
+# similar to lists, but used for static few elements
+{a, b} = {1, 2}
+a
+```
+
+```elixir
+{:reply, msg, state} = {:reply, "Abe found", ["Abe", "John", "Mary"]}
+msg
+```
+
+## Data Types - Keyword List
+
+an actual list but with key and value, where the key are atoms:
+
+```elixir
+data = [a: 1, b: 2]
+```
+
+it's exactly the same as using tuples inside lists:
+
+```elixir
+[{:a, 1}, {:b, 2}] == data
+```
+
+```elixir
+data[:a]
+```
+
+You can find functions to manage this data type under `Keyword` standard module of Elixir.
+
+## Data Types - Maps
+
+Very similar to keyword lists, but offers more features such as using different data types for keys:
+
+```elixir
+my_map = %{a: 1, b: 2, c: 3}
+my_map
+```
+
+```elixir
+my_map.a
+```
+
+```elixir
+%{a: first, b: second, c: _} = my_map
+second
+```
+
+```elixir
+%{c: third} = my_map
+third
+```
+
+```elixir
+# we can use other data types as key
+map2 = %{"first" => 1, "second" => 10}
+```
+
+```elixir
+# to extract elements from a map based on key
+%{"second" => second_elem} = map2
+second_elem
+```
+
+```elixir
+Map.get(map2, "first")
+```
+
+```elixir
+map2 = %{map2 | "first" => 2}
+```
+
+```elixir
+my_map = %{my_map | c: 20}
+```
+
+## Data Types - Struct
+
+Structs always take the name of the Module it's in:
+
+```elixir
+defmodule User do
+  defstruct username: "", email: "", age: nil
+end
+```
+
+```elixir
+user1 = %User{username: "Abe", age: 20, email: "abe@email.com"}
+```
+
+```elixir
+%{username: username} = user1
+username
+```
+
+```elixir
+user1 = %{user1 | age: 21}
+```
+
+## Recursion
+
+Avoid mutation of data, recursion is a common tool in functional programming for doing repetitive tasks.
+
+Elixir offers recursion easily and has builtin optimization in the compiler to avoid performance issues and high memory usage:
+
+```elixir
+defmodule PrintDigits do
+  # Base case
+  def upto_asc(0), do: :ok
+
+  def upto_asc(num) when is_integer(num) do
+    cond do
+      num > 0 -> upto_asc(num - 1)
+      # recursive call happens first (Head Recursion)
+      num < 0 -> upto_asc(num + 1)
+    end
+
+    IO.puts(num)
+  end
+
+  # Base case
+  def upto_desc(0), do: :ok
+
+  def upto_desc(num) when is_integer(num) do
+    IO.puts(num)
+
+    cond do
+      num > 0 -> upto_desc(num - 1)
+      # recursive call happens last (Tail recursion)
+      num < 0 -> upto_desc(num + 1)
+    end
+  end
+end
+```
+
+```elixir
+PrintDigits.upto_asc(5)
+```
+
+```elixir
+PrintDigits.upto_desc(5)
+```
+
+```elixir
+defmodule SumDigits do
+  def upto(0), do: 0
+
+  def upto(num) when is_integer(num) do
+    upto(num - 1) + num
+  end
+
+  def upto_tail_rec(num, acc \\ 0)
+  def upto_tail_rec(0, acc), do: acc
+
+  def upto_tail_rec(num, acc) do
+    upto_tail_rec(num - 1, acc + num)
+  end
+end
+```
+
+```elixir
+SumDigits.upto(10_000_000)
+```
+
+By making a recursive function tail recursive, we can achieve much more performance, since the ELixir compiler can Reuse the Stack, instead of creating multiple instances.
+
+```elixir
+SumDigits.upto_tail_rec(10_000_000)
+```
+
+```elixir
+defmodule Factorial do
+  def call(1), do: 1
+
+  def call(num) do
+    num * call(num - 1)
+  end
+
+  def call_rec(num, acc \\ 1)
+  def call_rec(1, acc), do: acc
+  def call_rec(num, acc), do: call_rec(num - 1, acc * num)
+end
+```
+
+```elixir
+Factorial.call(100_000)
+```
+
+```elixir
+Factorial.call_rec(100_000)
+```
+
+```elixir
+defmodule ReverseNum do
+  def call(num, acc \\ 0)
+  def call(0, acc), do: acc
+  def call(num, acc), do: call(div(num, 10), acc * 10 + rem(num, 10))
+end
+```
+
+```elixir
+ReverseNum.call(532)
+```
+
+Now let's apply the recursion to lists!
+
+```elixir
+defmodule ListsExercises do
+  @spec sum(list(number())) :: number()
+  def sum([]), do: 0
+  def sum([h | t]), do: h + sum(t)
+
+  def double_num(num), do: num * 2
+
+  def sum_rec(nums, acc \\ 0)
+  def sum_rec([], acc), do: acc
+  def sum_rec([h | t], acc), do: sum_rec(t, acc + h)
+
+  def reverse([]), do: []
+  def reverse([h | t]), do: reverse(t) ++ [h]
+
+  @spec reverse_rec([any()], [any()]) :: [any()]
+  def reverse_rec(elems, acc \\ [])
+  def reverse_rec([], acc), do: acc
+  def reverse_rec([h | t], acc), do: reverse_rec(t, [h | acc])
+
+  @spec map_rec([any()], (any() -> any()), [any()]) :: [any()]
+  def map_rec(elems, fun, acc \\ [])
+  def map_rec([], _, acc), do: acc |> reverse_rec()
+  def map_rec([h | t], fun, acc), do: map_rec(t, fun, [fun.(h) | acc])
+
+  @spec concat([any()], [any()]) :: [any()]
+  def concat(src, dst), do: concat_func(src |> reverse_rec(), dst)
+  defp concat_func([], dst), do: dst
+  defp concat_func([h | t], dst), do: concat_func(t, [h | dst])
+
+  def flat_map(elems, fun, acc \\ [])
+  def flat_map([], _, acc), do: acc
+
+  def flat_map([h | t], fun, acc) do
+    flat_map(t, fun, concat(acc, fun.(h)))
+  end
+end
+```
+
+```elixir
+[1, 2, 2, 2, 2, 2, 8] |> ListsExercises.sum()
+```
+
+```elixir
+[1, 2, 2, 2, 2, 2, 8] |> ListsExercises.sum_rec()
+```
+
+```elixir
+["a", "b", "c"] |> ListsExercises.reverse()
+```
+
+```elixir
+["a", "b", "c"] |> ListsExercises.reverse_rec()
+```
+
+```elixir
+ListsExercises.map_rec([1, 2, 3, 4, 5], fn x -> x * x end)
+```
+
+```elixir
+ListsExercises.map_rec([a: 1, b: 2], fn {k, v} -> {k, -v} end)
+```
+
+```elixir
+ListsExercises.map_rec([1, 2, 3, 4, 5, 6], &ListsExercises.double_num/1)
+```
+
+```elixir
+# same as ++ operator
+ListsExercises.concat([1, 2, 3], [4, 5, 6])
+```
+
+```elixir
+ListsExercises.flat_map([:a, :b, :c], fn x -> [x, x] end)
+```
+
+```elixir
+defprotocol ToRed do
+  @spec call(String.t()) :: String.t()
+  def call(value)
+end
+
+defimpl ToRed, for: BitString do
+  def call(self), do: self <> " but in red"
+end
+
+ToRed.call("abe")
+```
