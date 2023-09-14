@@ -14,7 +14,7 @@ defmodule GasStation.Application do
     children = [
       # Starts a worker by calling: GasStation.Worker.start_link(arg)
       # {GasStation.Worker, arg}
-      Fetchers.Eth,
+      GasStation.Fetchers.Eth,
       {Plug.Cowboy, scheme: :http, plug: GasStation.Endpoint, port: @port}
     ]
 

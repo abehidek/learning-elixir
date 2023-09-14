@@ -1,4 +1,4 @@
-defmodule Api.Eth do
+defmodule GasStation.Api.Eth do
   @moduledoc false
   @api_url "https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=YourApiKeyToken"
 

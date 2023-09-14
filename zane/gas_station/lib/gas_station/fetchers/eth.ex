@@ -1,4 +1,4 @@
-defmodule Fetchers.Eth do
+defmodule GasStation.Fetchers.Eth do
   @moduledoc false
   use GenServer
 
@@ -12,7 +12,7 @@ defmodule Fetchers.Eth do
     now = :os.system_time(:millisecond)
 
     if now - 30_000 > state.last_updated do
-      case Api.Eth.fetch_response() do
+      case GasStation.Api.Eth.fetch_response() do
         {:ok, response} ->
           IO.puts("New response: #{inspect(response)}")
 
