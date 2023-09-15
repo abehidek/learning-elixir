@@ -15,7 +15,7 @@ defmodule GasStation.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:logger, :observer, :wx, :runtime_tools],
       mod: {GasStation.Application, []}
     ]
   end
