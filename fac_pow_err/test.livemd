@@ -1,0 +1,45 @@
+# FacPowErr OTP tests
+
+## Section
+
+```elixir
+Mix.install([
+  {:httpoison, "~> 2.1"}
+])
+```
+
+```elixir
+req_time_in_milliseconds = 30000
+number_of_connections = 10
+```
+
+```elixir
+:ok =
+  :hackney_pool.start_pool(:first_pool,
+    timeout: req_time_in_milliseconds,
+    max_connections: number_of_connections
+  )
+```
+
+```elixir
+Enum.map(1..number_of_connections, fn x ->
+  spawn(fn ->
+    before = :os.system_time(:millisecond)
+
+    %HTTPoison.Response{body: body, status_code: sc} =
+      HTTPoison.post!(
+        "http://localhost:4000/test",
+        "{\"value\": 5}",
+        [{"Content-Type", "application/json"}],
+        recv_timeout: req_time_in_milliseconds,
+        hackney: [pool: :first_pool]
+      )
+
+    after_time = :os.system_time(:millisecond)
+
+    duration = after_time - before
+
+    IO.inspect({body, sc, duration}, label: "req #{x}")
+  end)
+end)
+```
