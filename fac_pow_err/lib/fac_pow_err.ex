@@ -16,6 +16,8 @@ defmodule FacPowErr do
     :world
   end
 
+  def add(a, b), do: a + b
+
   def factorial(num, acc \\ 1)
   def factorial(1, acc), do: acc
 
@@ -23,5 +25,5 @@ defmodule FacPowErr do
     factorial(num - 1, acc * num)
   end
 
-  def pow(num) when is_integer(num), do: num ** 2
+  def power(num) when is_integer(num), do: num ** 2
 end

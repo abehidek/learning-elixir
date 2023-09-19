@@ -16,9 +16,14 @@
     hello
   '';
 
-  languages.elixir = {
-    enable = true;
-    package = pkgs.elixir_1_15;
+  languages = {
+    elixir = {
+      enable = true;
+      package = pkgs.elixir_1_15;
+    };
+    rust = {
+      enable = true;
+    };
   };
 
 

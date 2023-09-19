@@ -1,0 +1,48 @@
+# FacPowErr Rustler tests
+
+## Section
+
+```elixir
+:observer.start()
+```
+
+```elixir
+before = :os.system_time(:millisecond)
+FacPowErr.Utils.factorial(2_000_000_000)
+after_time = :os.system_time(:millisecond)
+duration = after_time - before
+```
+
+```elixir
+Enum.map(1..50, fn x ->
+  spawn(fn ->
+    before = :os.system_time(:millisecond)
+    # fac = Enum.random(2000000000..10000000000)
+    fac = Enum.random(2_000_000_000..2_000_099_999)
+    FacPowErr.Utils.factorial(fac)
+    after_time = :os.system_time(:millisecond)
+
+    duration =
+      (after_time - before)
+      |> IO.inspect(label: "req number: #{x} fac: #{fac}")
+  end)
+end)
+```
+
+```elixir
+Enum.map(1..10, fn x ->
+  spawn(fn ->
+    before = :os.system_time(:millisecond)
+    FacPowErr.Utils.raise_error()
+    after_time = :os.system_time(:millisecond)
+
+    duration =
+      (after_time - before)
+      |> IO.inspect(label: "req number: #{x}")
+  end)
+end)
+
+:timer.sleep(1000)
+
+2 + 2
+```

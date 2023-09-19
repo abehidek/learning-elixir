@@ -1,7 +1,9 @@
 defmodule FacPowErr.Endpoint do
   @moduledoc false
   use Plug.Router
-  import FacPowErr
+
+  # import FacPowErr
+  import FacPowErr.Utils
 
   defmodule FacPowErr.Endpoint.Api do
     import Plug.Conn
@@ -33,23 +35,24 @@ defmodule FacPowErr.Endpoint do
 
   get "/" do
     conn
-    |> send_resp(200, Poison.encode!(%{"Hello" => "World"}))
+    |> send_resp(200, Poison.encode!(%{"Hello" => "World", "value" => add(10, 15)}))
   end
 
   post "/test" do
-    IO.inspect("/test")
     %Plug.Conn{body_params: body} = conn
 
-    :timer.sleep(15000)
+    :timer.sleep(8000)
+    # thread_sleep()
 
     # try do
     %{"value" => number} = body
 
     res =
       case :rand.uniform(3) do
-        1 -> factorial(number)
-        2 -> pow(number)
-        3 -> raise FacPowErr.Endpoint.RandomError
+        1 -> factorial(number) |> IO.inspect(label: "Elixir result")
+        2 -> power(number)
+        3 -> raise_error()
+        # 3 -> raise RandomError
         _ -> raise "unexpected range"
       end
 

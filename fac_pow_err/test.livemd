@@ -9,35 +9,31 @@ Mix.install([
 ```
 
 ```elixir
-req_time_in_milliseconds = 30000
-number_of_connections = 10
-```
-
-```elixir
-:ok =
-  :hackney_pool.start_pool(:first_pool,
-    timeout: req_time_in_milliseconds,
-    max_connections: number_of_connections
-  )
+req_time_in_milliseconds = 40000
+number_of_connections = 5
+delay_time = 8000
 ```
 
 ```elixir
 Enum.map(1..number_of_connections, fn x ->
   spawn(fn ->
+    IO.inspect("start req process #{x}")
+    # fac = Enum.random(2_000_000_000..2_000_099_999)
+    fac = 34
     before = :os.system_time(:millisecond)
 
     %HTTPoison.Response{body: body, status_code: sc} =
       HTTPoison.post!(
         "http://localhost:4000/test",
-        "{\"value\": 5}",
+        "{\"value\": #{fac}}",
         [{"Content-Type", "application/json"}],
         recv_timeout: req_time_in_milliseconds,
-        hackney: [pool: :first_pool]
+        hackney: [pool: false]
       )
 
     after_time = :os.system_time(:millisecond)
 
-    duration = after_time - before
+    duration = after_time - before - delay_time
 
     IO.inspect({body, sc, duration}, label: "req #{x}")
   end)
