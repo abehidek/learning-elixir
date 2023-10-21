@@ -7,6 +7,7 @@
   # https://devenv.sh/packages/
   packages = [
     (pkgs.livebook.override { elixir = pkgs.elixir_1_15; })
+    pkgs.inotify-tools
   ];
 
   # https://devenv.sh/scripts/
